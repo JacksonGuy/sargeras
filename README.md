@@ -9,6 +9,7 @@ Tyler William Warren has a severe World of Warcraft addiction and he needs to be
 ## Structure
 The client-side part of the malware spawn several subprocesses for functionality and reliability.
 
+
 ### Check
 The check process simply ensures that the master process is always running
 
@@ -34,5 +35,7 @@ for primary communication by the master process. Port 8082 is used for communica
 
 ### Backup Server
 This is just a barebones verison of the primary server which communicates to the backup process on the target's computer over port 8081.
+
+---
 
 ![diagram of malware structure](/diagram.png)
