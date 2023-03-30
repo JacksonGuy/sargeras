@@ -4,6 +4,8 @@ A simple framework for creating malware
 ## Purpose
 Tyler William Warren has a severe World of Warcraft addiction and he needs to be stopped. 
 
+---
+
 ## Structure
 The client-side part of the malware spawn several subprocesses for functionality and reliability.
 
@@ -23,6 +25,8 @@ still running.
 Just to be extra careful, the master process also launches a second barebones version of itself with only the command execution feature. This is meant so that, in
 worst case scenarios, we can connect to the backup terminal running on the target's computer to fix any issues. This terminal also connected to a seperate server from
 the master process and modules.
+
+---
 
 ## Server
 The server simply takes input from the user and sends the data over a socket to the target. The primary server has two sockets, 8080 and 8082. Port 8080 is used
