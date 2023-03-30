@@ -15,7 +15,7 @@ The check process simply ensures that the master process is always running
 
 ### Master
 The master process is the glue that essentially holds everything together. It is in charge of server communication, managing modules,
-and command execution.
+and command execution. The master process also ensures that the check process is always running, so theoretically the malware should always be running. 
 
 ### Modules
 An important feature of Sargeras is that new scripts can be written independently from the framework and added on even after the malware is already running. This
