@@ -7,7 +7,9 @@ import setproctitle
 from time import sleep
 import platform
 
-setproctitle.setproctitle("master")
+import config
+
+setproctitle.setproctitle(config.master_name)
 
 opsys = platform.system()
 
@@ -44,7 +46,7 @@ def ping():
         if connected:
             try:
                 s.send("ping".encode())
-                sleep(5)
+                sleep(config.ping_time)
             except BrokenPipeError:
                 # Failed to send message because socket connection broke
                 print("[Ping] Disconnected from Server: Server Offline")
@@ -55,7 +57,7 @@ def ping():
 def check():
     print("[Master] Starting check thread")
     while True and process_run:
-        sleep(3)
+        sleep(config.check_time)
         running = False
         
         # Iterate over running processes and look for the check process
@@ -89,7 +91,7 @@ def modules():
 
     print("[Master] Starting modules thread")
     while True and process_run:
-        sleep(10)
+        sleep(config.check_time)
         for m in module_list:
             # Assume mpdule isn't running and search process list for module
             running = False
@@ -129,10 +131,10 @@ def comms():
             connected = True
         except ConnectionRefusedError:
             print("[Master] Connection failed, retrying")
-            sleep(5)
+            sleep(config.connection_failed_time)
     while process_run and connected:
         data = ""
-        s.settimeout(10)
+        s.settimeout(config.connection_timeout)
         data = s.recv(1024).decode()
         
         if (data != "" and data != "pong"):

@@ -5,7 +5,9 @@ import subprocess
 import setproctitle
 from time import sleep
 
-setproctitle.setproctitle("backup")
+import config
+
+setproctitle.setproctitle(config.backup_name)
 
 HOST = "127.0.0.1"
 PORT = 8081
@@ -19,7 +21,7 @@ def ping():
     while True and connected:
         try:
             s.send("ping".encode())
-            sleep(5)
+            sleep(config.ping_time)
         except BrokenPipeError:
             print("[Backup] Disconnected from Server: Server Offline")
             connected = False
@@ -34,7 +36,7 @@ def main():
                 connected = True
             except ConnectionRefusedError:
                 print("[Backup] Connection failed, retrying")
-                sleep(5)
+                sleep(config.connection_failed_time)
         while (connected == True):
             data = s.recv(1024).decode()
             if (data != ""):

@@ -3,10 +3,12 @@ import subprocess
 import setproctitle
 from time import sleep
 
-setproctitle.setproctitle("check")
+import config
+
+setproctitle.setproctitle(config.check_name)
 
 while True:
-    sleep(3)
+    sleep(config.check_time)
     running = False
     for proc in psutil.process_iter():
         process = proc.as_dict(attrs=['name', 'pid'])
