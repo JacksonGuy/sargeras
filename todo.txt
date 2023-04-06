@@ -1,7 +1,0 @@
-finalize framework --> new features implement as modules
-backup terminal check if still connected to server
-autoload modules from folder
-send messages to individual modules from server
-windows testing
-comment code
-fix server terminal thing
