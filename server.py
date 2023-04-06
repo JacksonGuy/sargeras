@@ -5,6 +5,7 @@ HOST = "127.0.0.1"
 PORT_MAIN = 8080
 PORT_MODULE = 8082
 
+# Sends messages to master process
 def send(c, addr):
     while True:
         command = input(">> ")
@@ -18,6 +19,7 @@ def send(c, addr):
         else:
             c.send(command.encode())
 
+# Receives messages from master process
 def receive(c, addr):
     while True:
         response = c.recv(1024).decode()
@@ -28,6 +30,7 @@ def receive(c, addr):
             else:
                 print("\n[{address}] Response: \n{r}".format(address=addr[0], r=response))
 
+# Receives messages from modules
 def module(c, addr):
     while True:
         data = c.recv(1024).decode()
@@ -50,6 +53,7 @@ def main():
 
     s.close()
 
+# Accept connections from modules and start new thread for commuication
 def start_module():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT_MODULE))

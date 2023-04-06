@@ -14,6 +14,16 @@ s = socket.socket()
 
 connected = False
 
+def ping():
+    print("[Backup] started backup ping thread")
+    while True and connected:
+        try:
+            s.send("ping".encode())
+            sleep(5)
+        except BrokenPipeError:
+            print("[Backup] Disconnected from Server: Server Offline")
+            connected = False
+
 def main():
     global connected
     while True:
@@ -46,4 +56,7 @@ def main():
                         s.send(result.encode())
 
 if __name__ == "__main__":
+    ping_thread = threading.Thread(target=ping)
+    ping_thread.start()
+
     main()

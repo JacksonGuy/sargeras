@@ -22,7 +22,6 @@ connected = False
 # List of modules to check for
 # We start out with the backup terminal included
 module_list = ["backup"]
-#module_list = []
 
 def kill_process(name):
     global opsys
@@ -47,20 +46,26 @@ def ping():
                 s.send("ping".encode())
                 sleep(5)
             except BrokenPipeError:
+                # Failed to send message because socket connection broke
                 print("[Ping] Disconnected from Server: Server Offline")
                 connected = False
                 process_run = False
 
+# Makes sure that the check process is always running
 def check():
     print("[Master] Starting check thread")
     while True and process_run:
         sleep(3)
         running = False
+        
+        # Iterate over running processes and look for the check process
         for proc in psutil.process_iter():
             process = proc.as_dict(attrs=['name', 'pid'])
             if (process['name'] == 'check'):
                 running = True
                 break
+
+        # Check processes not running, relaunch it
         if (running == False):
             try:
                 result = subprocess.Popen(
@@ -74,17 +79,27 @@ def check():
             except subprocess.CalledProcessError as exc:
                 print(exc.output)
 
+# Auto checks that module processes are still running
 def modules():
+    # Load modules from module directory
+    for filename in os.listdir("./modules/"):
+        if (filename not in module_list):
+            # Name of the script without .py
+            module_list.append(filename[:len(filename)-3])
+
     print("[Master] Starting modules thread")
     while True and process_run:
         sleep(10)
         for m in module_list:
+            # Assume mpdule isn't running and search process list for module
             running = False
             for proc in psutil.process_iter():
                 process = proc.as_dict(attrs=['name', 'pid'])
                 if (process['name'] == m):
+                    # Module is running
                     running = True
                     break
+            # Module not running, start it
             if (running == False):
                 try:
                     result = subprocess.Popen(
